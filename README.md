@@ -1,6 +1,7 @@
 # noteBoi CLI
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
+![Version]<img width="420" height="245" alt="Screenshot 2026-01-07 114350" src="https://github.com/user-attachments/assets/8937ea55-ed5d-4634-ad9a-cc1eec9710cd" />
+
 
 <img width="420" height="236" alt="Screenshot 2026-01-07 114350" src="https://github.com/user-attachments/assets/d67f3a04-5805-4afb-a085-d74905f2a617" />
 
