@@ -17,6 +17,11 @@ noteBoi CLI is a stylish, interactive command-line application for managing your
 - **Persistent Storage:** Notes are safely stored as text files in the `data/` directory.
 - **Direct CLI Commands:** Quick actions for power users.
 
+## 🚀 What's New in v1.1.0
+- **Unified Settings:** Your preferred editor and theme settings now apply to both the interactive menu and direct CLI commands.
+- **Smart Editor Detection:** Improved logic to automatically find the best available editor on your system.
+- **Stability Improvements:** Cleaned up internal logic for a smoother startup experience.
+
 ## Requirements
 - Python 3.6+
 - Linux/macOS (uses `tty`/`termios` for interactive inputs)
