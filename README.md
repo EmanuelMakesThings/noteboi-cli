@@ -1,5 +1,8 @@
 # noteBoi CLI
 
+<img width="420" height="236" alt="Screenshot 2026-01-07 114350" src="https://github.com/user-attachments/assets/d67f3a04-5805-4afb-a085-d74905f2a617" />
+
+
 **Organize your thoughts.**
 
 noteBoi CLI is a stylish, interactive command-line application for managing your notes efficiently. Designed by Jonah Cecil.
