@@ -2,13 +2,12 @@ import os
 import argparse
 import sys
 import subprocess
-from notes_app.utils import get_note_actual_title
+from notes_app.utils import get_note_actual_title, load_settings, get_preferred_editor_command
 from notes_app.note_operations import (
     create_note_file, _list_notes_internal, NOTES_STORAGE_DIR, get_note_content
 )
 from notes_app.menu import run_menu
-from notes_app.intro import play_intro # Import the intro function
-from notes_app.utils import get_note_actual_title, load_settings
+from notes_app.intro import play_intro
 
 def main():
     # If no arguments are provided, run the menu.
@@ -69,21 +68,12 @@ def main():
             print(f"Note '{args.title}' deleted.")
         elif args.command == "edit":
             file_path = os.path.join(NOTES_STORAGE_DIR, target_filename)
-            editor = os.environ.get('EDITOR')
-            if editor is None:
-                try:
-                    subprocess.run(['micro', '-version'], check=True, capture_output=True)
-                    editor = 'micro'
-                except (FileNotFoundError, subprocess.CalledProcessError):
-                    editor = 'nano'
+            editor = get_preferred_editor_command()
             try:
                 print(f"Opening '{args.title}' in {editor}...")
                 subprocess.run([editor, file_path])
             except FileNotFoundError:
                 print(f"Error: Editor '{editor}' not found. Please set your EDITOR environment variable or install micro/nano/vi.")
-
-if __name__ == "__main__":
-    main()
 
 if __name__ == "__main__":
     main()

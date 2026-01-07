@@ -1,7 +1,8 @@
 # noteBoi CLI
 
-<img width="420" height="236" alt="Screenshot 2026-01-07 114350" src="https://github.com/user-attachments/assets/d67f3a04-5805-4afb-a085-d74905f2a617" />
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
 
+<img width="420" height="236" alt="Screenshot 2026-01-07 114350" src="https://github.com/user-attachments/assets/d67f3a04-5805-4afb-a085-d74905f2a617" />
 
 **Organize your thoughts.**
 
@@ -73,3 +74,6 @@ Settings are stored locally in `settings.json` and can be modified via the **Set
 
 ## Data Storage
 All notes are stored as `.txt` files in the `data/` directory.
+
+## Changelog
+See [CHANGELOG.md](CHANGELOG.md) for a history of changes and updates.

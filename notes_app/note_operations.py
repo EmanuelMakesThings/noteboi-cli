@@ -4,7 +4,7 @@ import subprocess
 import sys
 from notes_app.utils import (
     get_note_actual_title, show_selection_menu, clear_screen,
-    NOTES_STORAGE_DIR, RESET, BOLD, BLUE, CYAN, WHITE, load_settings
+    NOTES_STORAGE_DIR, Colors, load_settings, get_preferred_editor_command
 )
 
 def _ensure_notes_dir_exists():
@@ -68,13 +68,13 @@ def _get_sorted_notes_files():
     return sorted([f for f in os.listdir(NOTES_STORAGE_DIR) if f.endswith(".txt")])
 
 def add_note():
-    print(f"{CYAN}{BOLD}Add New Note{RESET}")
-    print(f"{BLUE}-------------------{RESET}")
-    title = input(f"{WHITE}Enter note title: {RESET}").strip()
+    print(f"{Colors.CYAN}{Colors.BOLD}Add New Note{Colors.RESET}")
+    print(f"{Colors.BLUE}-------------------{Colors.RESET}")
+    title = input(f"{Colors.WHITE}Enter note title: {Colors.RESET}").strip()
     if not title:
-        print(f"{WHITE}Error: Title cannot be empty.{RESET}")
+        print(f"{Colors.WHITE}Error: Title cannot be empty.{Colors.RESET}")
         return
-    print(f"{WHITE}Enter note content (type 'EOF' on a new line to finish):{RESET}")
+    print(f"{Colors.WHITE}Enter note content (type 'EOF' on a new line to finish):{Colors.RESET}")
     content_lines = []
     while True:
         try:
@@ -87,32 +87,32 @@ def add_note():
         content_lines.append(line)
     content = "\n".join(content_lines)
     create_note_file(title, content)
-    print(f"{CYAN}Note '{title}' added successfully.{RESET}")
-    input(f"\n{BLUE}Press Enter to return to menu...{RESET}")
+    print(f"{Colors.CYAN}Note '{title}' added successfully.{Colors.RESET}")
+    input(f"\n{Colors.BLUE}Press Enter to return to menu...{Colors.RESET}")
 
 def _list_notes_internal(include_numbers=True):
     notes = _get_sorted_notes_files()
     if not notes:
-        print(f"{WHITE}No notes found.{RESET}")
+        print(f"{Colors.WHITE}No notes found.{Colors.RESET}")
         return []
     
-    print(f"\n{CYAN}{BOLD}--- Current Notes ---{RESET}")
+    print(f"\n{Colors.CYAN}{Colors.BOLD}--- Current Notes ---{Colors.RESET}")
     for i, filename in enumerate(notes, 1):
         title = get_note_actual_title(filename)
         size, last_mod = _get_file_info(filename)
         prefix = f"{i}. " if include_numbers else "- "
-        print(f"{WHITE}{prefix}{title} {BLUE}(Size: {size}, Modified: {last_mod}){RESET}")
+        print(f"{Colors.WHITE}{prefix}{title} {Colors.BLUE}(Size: {size}, Modified: {last_mod}){Colors.RESET}")
     return notes
 
 def list_notes():
     _list_notes_internal(include_numbers=False)
-    input(f"\n{BLUE}Press Enter to return to menu...{RESET}")
+    input(f"\n{Colors.BLUE}Press Enter to return to menu...{Colors.RESET}")
 
 def view_note():
     notes = _get_sorted_notes_files()
     if not notes:
-        print(f"{WHITE}No notes found to view.{RESET}")
-        input(f"\n{BLUE}Press Enter to return to menu...{RESET}")
+        print(f"{Colors.WHITE}No notes found to view.{Colors.RESET}")
+        input(f"\n{Colors.BLUE}Press Enter to return to menu...{Colors.RESET}")
         return
     
     options = []
@@ -127,16 +127,16 @@ def view_note():
     if selected_title:
         clear_screen()
         content = get_note_content(selected_title)
-        print(f"{CYAN}{BOLD}--- {selected_title} ---{RESET}")
-        print(f"{WHITE}{content}{RESET}")
-        print(f"{BLUE}" + "-" * (len(selected_title) + 8) + f"{RESET}")
-        input(f"\n{BLUE}Press Enter to return to menu...{RESET}")
+        print(f"{Colors.CYAN}{Colors.BOLD}--- {selected_title} ---{Colors.RESET}")
+        print(f"{Colors.WHITE}{content}{Colors.RESET}")
+        print(f"{Colors.BLUE}" + "-" * (len(selected_title) + 8) + f"{Colors.RESET}")
+        input(f"\n{Colors.BLUE}Press Enter to return to menu...{Colors.RESET}")
 
 def edit_note():
     notes = _get_sorted_notes_files()
     if not notes:
-        print(f"{WHITE}No notes found to edit.{RESET}")
-        input(f"\n{BLUE}Press Enter to return to menu...{RESET}")
+        print(f"{Colors.WHITE}No notes found to edit.{Colors.RESET}")
+        input(f"\n{Colors.BLUE}Press Enter to return to menu...{Colors.RESET}")
         return
     
     options = []
@@ -152,61 +152,30 @@ def edit_note():
         filename = f"{selected_title}.txt"
         file_path = os.path.join(NOTES_STORAGE_DIR, filename)
         
-        settings = load_settings()
-        preferred_editor = settings.get("preferred_editor", "Auto")
-        editor = None
-
-        if preferred_editor != "Auto":
-            editor = preferred_editor
+        editor = get_preferred_editor_command()
         
-        # Priority if Auto or preferred failed: micro -> $EDITOR -> nano -> vi
-        if not editor:
-            # Try micro first
-            try:
-                subprocess.run(['micro', '-version'], check=True, capture_output=True)
-                editor = 'micro'
-            except (FileNotFoundError, subprocess.CalledProcessError):
-                pass
-                
-            # Fallback to $EDITOR
-            if not editor:
-                editor = os.environ.get('EDITOR')
-                
-            # Fallback to nano
-            if not editor:
-                try:
-                    subprocess.run(['nano', '--version'], check=True, capture_output=True)
-                    editor = 'nano'
-                except (FileNotFoundError, subprocess.CalledProcessError):
-                    pass
-                    
-            # Final fallback to vi
-            if not editor:
-                editor = 'vi'
-        
-        print(f"{WHITE}Opening '{selected_title}' in {editor}...{RESET}")
+        print(f"{Colors.WHITE}Opening '{selected_title}' in {editor}...{Colors.RESET}")
         try:
             subprocess.run([editor, file_path])
         except FileNotFoundError:
-             print(f"{WHITE}Error: Editor '{editor}' not found. Please check your settings or installation.{RESET}")
-             input(f"\n{BLUE}Press Enter to return to menu...{RESET}")
-        # No wait here, assuming subprocess.run waits.
+             print(f"{Colors.WHITE}Error: Editor '{editor}' not found. Please check your settings or installation.{Colors.RESET}")
+             input(f"\n{Colors.BLUE}Press Enter to return to menu...{Colors.RESET}")
 
 def delete_note():
     # Explicitly NOT using a selection menu for safety, as requested.
     # User must type the exact name.
     
     _list_notes_internal(include_numbers=False)
-    print(f"\n{BLUE}-------------------{RESET}")
+    print(f"\n{Colors.BLUE}-------------------{Colors.RESET}")
     
     notes = _get_sorted_notes_files()
     if not notes:
-        input(f"\n{BLUE}Press Enter to return to menu...{RESET}")
+        input(f"\n{Colors.BLUE}Press Enter to return to menu...{Colors.RESET}")
         return
 
     try:
-        print(f"{WHITE}To delete a note, please type its {BOLD}EXACT{RESET}{WHITE} name.{RESET}")
-        target_title = input(f"{CYAN}Note Name > {RESET}").strip()
+        print(f"{Colors.WHITE}To delete a note, please type its {Colors.BOLD}EXACT{Colors.RESET}{Colors.WHITE} name.{Colors.RESET}")
+        target_title = input(f"{Colors.CYAN}Note Name > {Colors.RESET}").strip()
         
         if not target_title:
             return
@@ -219,18 +188,18 @@ def delete_note():
                 break
         
         if found:
-            confirm = input(f"{WHITE}Are you sure you want to delete '{target_title}'? (y/N): {RESET}").lower()
+            confirm = input(f"{Colors.WHITE}Are you sure you want to delete '{target_title}'? (y/N): {Colors.RESET}").lower()
             if confirm == 'y':
                 if delete_note_by_title(target_title):
-                    print(f"{CYAN}Note '{target_title}' deleted.{RESET}")
+                    print(f"{Colors.CYAN}Note '{target_title}' deleted.{Colors.RESET}")
                 else:
-                    print(f"{WHITE}Failed to delete note.{RESET}")
+                    print(f"{Colors.WHITE}Failed to delete note.{Colors.RESET}")
             else:
-                print(f"{WHITE}Deletion cancelled.{RESET}")
+                print(f"{Colors.WHITE}Deletion cancelled.{Colors.RESET}")
         else:
-            print(f"{WHITE}Note '{target_title}' not found.{RESET}")
+            print(f"{Colors.WHITE}Note '{target_title}' not found.{Colors.RESET}")
 
     except KeyboardInterrupt:
-        print(f"\n{WHITE}Operation cancelled.{RESET}")
+        print(f"\n{Colors.WHITE}Operation cancelled.{Colors.RESET}")
 
-    input(f"\n{BLUE}Press Enter to return to menu...{RESET}")
+    input(f"\n{Colors.BLUE}Press Enter to return to menu...{Colors.RESET}")

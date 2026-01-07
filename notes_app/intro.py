@@ -1,6 +1,6 @@
 import time
 import sys
-from notes_app.utils import clear_screen, RESET, BOLD, BLUE, CYAN, WHITE
+from notes_app.utils import clear_screen, Colors
 
 def typewriter_print(text, delay=0.05, color=None, newline=True):
     """Prints text character by character with a delay and optional color."""
@@ -13,7 +13,7 @@ def typewriter_print(text, delay=0.05, color=None, newline=True):
         time.sleep(delay)
     
     if color:
-        sys.stdout.write(RESET)
+        sys.stdout.write(Colors.RESET)
     
     if newline:
         print() 
@@ -25,13 +25,13 @@ def play_intro():
 
     # Line 1: Welcome to noteBoi CLI
     sys.stdout.write("         ")
-    typewriter_print("Welcome to ", delay=0.05, color=WHITE, newline=False)
-    typewriter_print("noteBoi CLI", delay=0.07, color=CYAN + BOLD, newline=True)
+    typewriter_print("Welcome to ", delay=0.05, color=Colors.WHITE, newline=False)
+    typewriter_print("noteBoi CLI", delay=0.07, color=Colors.CYAN + Colors.BOLD, newline=True)
     time.sleep(0.5)
 
     # Line 2: Organize your thoughts
     sys.stdout.write("         ")
-    typewriter_print("Organize your thoughts", delay=0.05, color=WHITE, newline=True)
+    typewriter_print("Organize your thoughts", delay=0.05, color=Colors.WHITE, newline=True)
     time.sleep(0.5)
 
     # Space for visual separation
@@ -39,12 +39,12 @@ def play_intro():
 
     # Line 3: Designed by...
     sys.stdout.write("         ")
-    typewriter_print("Designed by Jonah Cecil", delay=0.05, color=BLUE, newline=True)
+    typewriter_print("Designed by Jonah Cecil", delay=0.05, color=Colors.BLUE, newline=True)
     time.sleep(0.5)
 
     print("\n")
     sys.stdout.write("         ") # Indent prompt
-    typewriter_print("READY > ", delay=0.05, color=CYAN + BOLD, newline=False)
+    typewriter_print("READY > ", delay=0.05, color=Colors.CYAN + Colors.BOLD, newline=False)
     input() # Wait for user to press Enter
     clear_screen()
 
